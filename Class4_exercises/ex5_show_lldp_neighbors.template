@@ -1,0 +1,32 @@
+# Some regex revision
+# [*>]      - Remove any special regex meaning and take *> as a literal character search
+# ^         - anchor to the start of the line.
+# \S        - matches any non-whitespace character.
+# \s        - matches any whitespace character.
+# \d        - matches a digit (equivalent to [0-9]).
+# {1,3}     - matches the previous token between 1 and 3 times, as many times as possible, giving back as needed (greedy).
+# \.        - matches the character "."
+# +         - matches the previous token between one and unlimited times, as many times as possible, giving back as needed (greedy).
+# .         - matches any character (except for line terminators).
+# *         - matches the previous token between zero and unlimited times, as many times as possible, giving back as needed (greedy).
+# K         - matches the character 'K'
+# filldown will substitute a blank entry with the last known non-blank entry
+# Extract the Device ID, Local Intf, Capability, and Port ID.
+Value DEVICE_ID (^\S+[.]\S+)
+Value LOCAL_INTF (\S+/\S+)
+Value CAPABILITY (\S+)
+Value PORT_ID (\S+/\S+)
+
+Start
+  ^Capability.* -> PreAmble
+
+PreAmble
+  ^\s+[(]\S[)].* -> Header
+
+Header
+  ^Device.*ID\s+$$ -> Show_lldp_Neighbors
+
+Show_lldp_Neighbors
+  ^${DEVICE_ID}\s+${LOCAL_INTF}\s+\d{3}\s+${CAPABILITY}\s+${PORT_ID} -> Record
+
+EOF

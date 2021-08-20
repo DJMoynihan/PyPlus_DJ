@@ -1,0 +1,12 @@
+Value INTERFACE (\S+)
+Value IP_ADDR (\S+)
+Value LINE_STATUS (up|down)
+Value LINE_PROTOCOL (up|down)
+
+Start
+  ^Interface.*Protocol\s*$$ -> ShowIPIntBrief
+
+ShowIPIntBrief
+  ^${INTERFACE}\s+${IP_ADDR}.*${LINE_STATUS}\s+${LINE_PROTOCOL}\s*$$ -> Record
+
+EOF
